@@ -19,38 +19,45 @@ def validar_evento(nombre, fecha):
     return True
 
 def alta_evento(eventos):
-    nombre = input("Ingrese nombre del evento: ")
-    fecha = input("Ingrese fecha (DD/MM/AAAA): ")
-    if validar_evento(nombre, fecha):
-        eventos.append({'nombre': nombre, 'fecha': fecha})
-        print("Evento agregado.")
+    cliente = input("Ingrese nombre del cliente: ")
+    fecha = input("Ingrese fecha del evento: ")
+    tipo = input("Ingrese tipo de evento: ")
+    evento = {
+        "cliente": cliente,
+        "fecha": fecha,
+        "tipo": tipo
+    }
+    eventos.append(evento)
+    print("Evento agregado.")
+
 
 def baja_evento(eventos):
-    nombre = input("Ingrese nombre del evento a eliminar: ")
+    cliente = input("Ingrese nombre del evento a eliminar: ")
     for e in eventos:
-        if e['nombre'] == nombre:
+        if e['cliente'] == cliente:
             eventos.remove(e)
             print("Evento eliminado.")
             return
     print("Evento no encontrado.")
 
+
 def modificar_evento(eventos):
-    nombre = input("Ingrese nombre del evento a modificar: ")
+    cliente = input("Ingrese nombre del evento a modificar: ")
     for e in eventos:
-        if e['nombre'] == nombre:
-            nuevo_nombre = input("Nuevo nombre: ")
+        if e['cliente'] == cliente:
+            nuevo_cliente = input("Nuevo nombre del cliente: ")
             nueva_fecha = input("Nueva fecha (DD/MM/AAAA): ")
-            if validar_evento(nuevo_nombre, nueva_fecha):
-                e['nombre'] = nuevo_nombre
-                e['fecha'] = nueva_fecha
-                print("Evento modificado.")
+            nuevo_tipo = input("Nuevo tipo de evento: ")  
+            e.update({"cliente": nuevo_cliente, "fecha": nueva_fecha, "tipo": nuevo_tipo})
+            print("Evento modificado.")
             return
     print("Evento no encontrado.")
+
 
 def listar_eventos(eventos):
     print("\nLista de Eventos:")
     for e in eventos:
-        print(f"- {e['nombre']} ({e['fecha']})")
+        print(f"- Cliente: {e['cliente']}, Fecha: {e['fecha']}, Tipo: {e['tipo']}")
 
 def abm_eventos(eventos):
     while True:

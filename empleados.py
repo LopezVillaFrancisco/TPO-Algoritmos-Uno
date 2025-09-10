@@ -10,31 +10,43 @@ def mostrar_menu_empleados():
 
 def alta_empleado(empleados):
     nombre = input("Ingrese nombre del empleado/encargado: ")
-    empleados.append(nombre)
+    dni = input("Ingrese DNI: ")
+    tarea = input("Ingrese tarea: ")
+    empleado = {
+        "nombre": nombre,
+        "dni": dni,
+        "tarea": tarea
+    }
+    empleados.append(empleado)
     print("Empleado/Encargado agregado.")
+
 
 def baja_empleado(empleados):
     nombre = input("Ingrese nombre del empleado/encargado a eliminar: ")
-    if nombre in empleados:
-        empleados.remove(nombre)
-        print("Empleado/Encargado eliminado.")
-    else:
-        print("No encontrado.")
+    for e in empleados:
+        if e['nombre'] == nombre:
+            empleados.remove(e)
+            print("Empleado/Encargado eliminado.")
+            return
+    print("No encontrado.")
+
 
 def modificar_empleado(empleados):
     nombre = input("Ingrese nombre del empleado/encargado a modificar: ")
-    if nombre in empleados:
-        nuevo_nombre = input("Ingrese el nuevo nombre: ")
-        idx = empleados.index(nombre)
-        empleados[idx] = nuevo_nombre
-        print("Empleado/Encargado modificado.")
-    else:
-        print("No encontrado.")
+    for e in empleados:
+        if e['nombre'] == nombre:
+            nuevo_nombre = input("Ingrese el nuevo nombre: ")
+            nuevo_dni = input("Ingrese el nuevo DNI: ")
+            nueva_tarea = input("Ingrese la nueva tarea: ")
+            e.update({"nombre": nuevo_nombre, "dni": nuevo_dni, "tarea": nueva_tarea})
+            print("Empleado/Encargado modificado.")
+            return
+    print("No encontrado.")
 
 def listar_empleados(empleados):
     print("\nLista de Empleados/Encargados:")
     for e in empleados:
-        print("-", e)
+        print(f"- {e['nombre']} (DNI: {e['dni']}, Tarea: {e['tarea']})")
 
 def abm_empleados(empleados):
     while True:

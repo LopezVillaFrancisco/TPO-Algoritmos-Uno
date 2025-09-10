@@ -19,9 +19,11 @@ def main():
     servicios = []  # Lista para almacenar los servicios en memoria
     empleados = []  # Lista para almacenar los empleados/encargados en memoria
     eventos = []    # Lista para almacenar los eventos en memoria
+    
     while True:
         mostrar_menu()
         opcion = input("Seleccione una opción: ")
+        
         if opcion == "1":
             abm_servicios(servicios)
         elif opcion == "2":
@@ -34,4 +36,5 @@ def main():
         else:
             print("Opción inválida. Intente de nuevo.")
 
+if __name__ == "__main__":
     main()
