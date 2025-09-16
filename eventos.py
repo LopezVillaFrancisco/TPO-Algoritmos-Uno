@@ -14,13 +14,13 @@ def validar_evento(nombre, fecha):
         print("El nombre no puede estar vacío.")
         return False
     if not fecha:
-        print("La fecha no puede estar vacía. INGRESAR EN FORMATO (DD/MM/AAAA)")
+        print("La fecha no puede estar vacía. INGRESAR EN FORMATO (DD/MM/AAAA)")    
         return False
     return True
 
 def alta_evento(eventos):
     cliente = input("Ingrese nombre del cliente: ")
-    fecha = input("Ingrese fecha del evento: ")
+    fecha = input("Ingrese fecha (DD/MM/AAAA): ")
     tipo = input("Ingrese tipo de evento: ")
     evento = {
         "cliente": cliente,

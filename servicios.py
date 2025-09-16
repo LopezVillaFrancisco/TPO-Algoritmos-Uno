@@ -10,7 +10,7 @@ def mostrar_menu_servicios():
 def alta_servicio(servicios):
     nombre = input("Ingrese nombre del servicio: ")
     descripcion = input("Ingrese descripción: ")
-    costo = input("Ingrese costo: ")
+    costo = float(input("Ingrese costo: "))
     servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
     servicios.append(servicio)
     print("Servicio agregado.")
