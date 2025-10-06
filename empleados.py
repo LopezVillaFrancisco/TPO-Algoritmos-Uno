@@ -10,7 +10,7 @@ def mostrar_menu_empleados():
 
 def alta_empleado(empleados):
     nombre = input("Ingrese nombre del empleado/encargado: ")
-    dni = input("Ingrese DNI: ")
+    dni = int(input("Ingrese DNI: "))
     tarea = input("Ingrese tarea: ")
     empleado = {
         "nombre": nombre,
@@ -51,16 +51,16 @@ def listar_empleados(empleados):
 def abm_empleados(empleados):
     while True:
         mostrar_menu_empleados()
-        opcion = input("Seleccione una opción: ")
-        if opcion == "1":
+        opcion = int(input("Seleccione una opción: "))
+        if opcion == 1:
             alta_empleado(empleados)
-        elif opcion == "2":
+        elif opcion == 2:
             baja_empleado(empleados)
-        elif opcion == "3":
+        elif opcion == 3:
             modificar_empleado(empleados)
-        elif opcion == "4":
+        elif opcion == 4:
             listar_empleados(empleados)
-        elif opcion == "0":
+        elif opcion == 0:
             break
         else:
             print("Opción inválida.")
