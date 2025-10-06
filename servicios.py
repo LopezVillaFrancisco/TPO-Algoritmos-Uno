@@ -10,7 +10,7 @@ def mostrar_menu_servicios():
 def alta_servicio(servicios):
     nombre = input("Ingrese nombre del servicio: ")
     descripcion = input("Ingrese descripción: ")
-    costo = input("Ingrese costo: ")
+    costo = float(input("Ingrese costo: "))
     servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
     servicios.append(servicio)
     print("Servicio agregado.")
@@ -32,7 +32,7 @@ def modificar_servicio(servicios):
         if s['nombre'] == nombre:
             nuevo_nombre = input("Ingrese el nuevo nombre: ")
             nueva_descripcion = input("Ingrese la nueva descripción: ")
-            nuevo_costo = input("Ingrese el nuevo costo: ")
+            nuevo_costo = float(input("Ingrese el nuevo costo: "))
             s.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo})
             print("Servicio modificado.")
             return
@@ -47,16 +47,16 @@ def listar_servicios(servicios):
 def abm_servicios(servicios):
     while True:
         mostrar_menu_servicios()
-        opcion = input("Seleccione una opción: ")
-        if opcion == "1":
+        opcion = int(input("Seleccione una opción: "))
+        if opcion == 1:
             alta_servicio(servicios)
-        elif opcion == "2":
+        elif opcion == 2:
             baja_servicio(servicios)
-        elif opcion == "3":
+        elif opcion == 3:
             modificar_servicio(servicios)
-        elif opcion == "4":
+        elif opcion == 4:
             listar_servicios(servicios)
-        elif opcion == "0":
+        elif opcion == 0:
             break
         else:
             print("Opción inválida.")

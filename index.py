@@ -22,15 +22,14 @@ def main():
     
     while True:
         mostrar_menu()
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == "1":
+        opcion = int(input("Seleccione una opción: "))
+        if opcion == 1:
             abm_servicios(servicios)
-        elif opcion == "2":
+        elif opcion == 2:
             abm_empleados(empleados)
-        elif opcion == "3":
+        elif opcion == 3:
             abm_eventos(eventos)
-        elif opcion == "0":
+        elif opcion == 0:
             print("Saliendo...")
             break
         else:
