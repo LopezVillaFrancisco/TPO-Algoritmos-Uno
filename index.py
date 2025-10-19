@@ -1,7 +1,4 @@
 
-# index.py
-
-
 from servicios import abm_servicios
 from empleados import abm_empleados
 from eventos import abm_eventos
