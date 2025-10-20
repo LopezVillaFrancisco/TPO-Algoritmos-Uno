@@ -12,39 +12,48 @@ def mostrar_menu_servicios():
 
 def alta_servicio(servicios):
     """Pide datos por consola y agrega un servicio a la lista."""
-    nombre = input("Ingrese nombre del servicio: ")
-    descripcion = input("Ingrese descripción: ")
-    costo_texto = input("Ingrese costo: ")
-    costo = float(costo_texto)
-    servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
-    servicios.append(servicio)
-    print("Servicio agregado.")
+    try:
+        nombre = input("Ingrese nombre del servicio: ")
+        descripcion = input("Ingrese descripción: ")
+        costo_texto = input("Ingrese costo: ")
+        costo = float(costo_texto)
+        servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
+        servicios.append(servicio)
+        print("Servicio agregado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo agregar el servicio. Revise los datos.")
 
 
 def baja_servicio(servicios):
     """Elimina un servicio por nombre si existe."""
-    nombre = input("Ingrese nombre del servicio a eliminar: ")
-    for servicio in servicios:
-        if servicio.get('nombre') == nombre:
-            servicios.remove(servicio)
-            print("Servicio eliminado.")
-            return
-    print("Servicio no encontrado.")
+    try:
+        nombre = input("Ingrese nombre del servicio a eliminar: ")
+        for servicio in servicios:
+            if servicio.get('nombre') == nombre:
+                servicios.remove(servicio)
+                print("Servicio eliminado.")
+                return
+        print("Servicio no encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo eliminar el servicio. Revise la entrada.")
 
 
 def modificar_servicio(servicios):
     """Modifica los campos de un servicio identificado por nombre."""
-    nombre = input("Ingrese nombre del servicio a modificar: ")
-    for servicio in servicios:
-        if servicio.get('nombre') == nombre:
-            nuevo_nombre = input("Ingrese el nuevo nombre: ")
-            nueva_descripcion = input("Ingrese la nueva descripción: ")
-            nuevo_costo = input("Ingrese el nuevo costo: ")
-            nuevo_costo_val = float(nuevo_costo)
-            servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo_val})
-            print("Servicio modificado.")
-            return
-    print("Servicio no encontrado.")
+    try:
+        nombre = input("Ingrese nombre del servicio a modificar: ")
+        for servicio in servicios:
+            if servicio.get('nombre') == nombre:
+                nuevo_nombre = input("Ingrese el nuevo nombre: ")
+                nueva_descripcion = input("Ingrese la nueva descripción: ")
+                nuevo_costo = input("Ingrese el nuevo costo: ")
+                nuevo_costo_val = float(nuevo_costo)
+                servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo_val})
+                print("Servicio modificado.")
+                return
+        print("Servicio no encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo modificar el servicio. Revise los datos.")
 
 
 def listar_servicios(servicios):
@@ -77,27 +86,31 @@ def listar_servicios_ordenado(lista_servicios):
         print(linea)
 
 def abm_servicios(servicios):
-    while True:
-        mostrar_menu_servicios()
-        opcion = input("Seleccione una opción: ")
-        if opcion == "1":
-            alta_servicio(servicios)
-        elif opcion == "2":
-            baja_servicio(servicios)
-        elif opcion == "3":
-            modificar_servicio(servicios)
-        elif opcion == "4":
-            listar_servicios(servicios)
-        elif opcion == "5":
-            nombre_buscar = input("Ingrese nombre del servicio a buscar: ")
-            res = buscar_servicio_por_nombre(servicios, nombre_buscar)
-            if res:
-                print("Servicio encontrado:", res)
+    opcion = ''
+    while opcion != "0":
+        try:
+            mostrar_menu_servicios()
+            opcion = input("Seleccione una opción: ")
+            if opcion == "1":
+                alta_servicio(servicios)
+            elif opcion == "2":
+                baja_servicio(servicios)
+            elif opcion == "3":
+                modificar_servicio(servicios)
+            elif opcion == "4":
+                listar_servicios(servicios)
+            elif opcion == "5":
+                nombre_buscar = input("Ingrese nombre del servicio a buscar: ")
+                res = buscar_servicio_por_nombre(servicios, nombre_buscar)
+                if res:
+                    print("Servicio encontrado:", res)
+                else:
+                    print("Servicio no encontrado.")
+            elif opcion == "6":
+                listar_servicios_ordenado(servicios)
+            elif opcion == "0":
+                break
             else:
-                print("Servicio no encontrado.")
-        elif opcion == "6":
-            listar_servicios_ordenado(servicios)
-        elif opcion == "0":
-            break
-        else:
-            print("Opción inválida.")
+                print("Opción inválida.")
+        except (ValueError, IndexError, TypeError):
+            print("Error en el menú de servicios. Intente nuevamente.")

@@ -12,53 +12,62 @@ def mostrar_menu_eventos():
 
 def validar_evento(nombre, fecha):
     """Valida que nombre y fecha no estén vacíos."""
-    if not nombre:
+    if nombre == "":
         print("El nombre no puede estar vacío.")
         return False
-    if not fecha:
+    if fecha == "":
         print("La fecha no puede estar vacía. INGRESAR EN FORMATO (DD/MM/AAAA)")    
         return False
     return True
 
 def alta_evento(eventos):
     """Pide datos por consola y agrega un evento a la lista."""
-    cliente = input("Ingrese nombre del cliente: ")
-    fecha = input("Ingrese fecha (DD/MM/AAAA): ")
-    tipo = input("Ingrese tipo de evento: ")
-    if not validar_evento(cliente, fecha):
-        return
-    evento = {
-        "cliente": cliente,
-        "fecha": fecha,
-        "tipo": tipo
-    }
-    eventos.append(evento)
-    print("Evento agregado.")
+    try:
+        cliente = input("Ingrese nombre del cliente: ")
+        fecha = input("Ingrese fecha (DD/MM/AAAA): ")
+        tipo = input("Ingrese tipo de evento: ")
+        if validar_evento(cliente, fecha) == False:
+            return
+        evento = {
+            "cliente": cliente,
+            "fecha": fecha,
+            "tipo": tipo
+        }
+        eventos.append(evento)
+        print("Evento agregado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo agregar el evento. Revise los datos.")
 
 
 def baja_evento(eventos):
     """Elimina un evento por cliente si existe."""
-    cliente = input("Ingrese nombre del evento a eliminar: ")
-    for evento in eventos:
-        if evento.get('cliente') == cliente:
-            eventos.remove(evento)
-            print("Evento eliminado.")
-            return
-    print("Evento no encontrado.")
+    try:
+        cliente = input("Ingrese nombre del evento a eliminar: ")
+        for evento in eventos:
+            if evento.get('cliente') == cliente:
+                eventos.remove(evento)
+                print("Evento eliminado.")
+                return
+        print("Evento no encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo eliminar el evento. Revise la entrada.")
 
 
 def modificar_evento(eventos):
     """Modifica los datos de un evento identificado por cliente."""
-    cliente = input("Ingrese nombre del evento a modificar: ")
-    for evento in eventos:
-        if evento.get('cliente') == cliente:
-            nuevo_cliente = input("Nuevo nombre del cliente: ")
-            nueva_fecha = input("Nueva fecha (DD/MM/AAAA): ")
-            nuevo_tipo = input("Nuevo tipo de evento: ")  
-            evento.update({"cliente": nuevo_cliente, "fecha": nueva_fecha, "tipo": nuevo_tipo})
-            print("Evento modificado.")
-            return
-    print("Evento no encontrado.")
+    try:
+        cliente = input("Ingrese nombre del evento a modificar: ")
+        for evento in eventos:
+            if evento.get('cliente') == cliente:
+                nuevo_cliente = input("Nuevo nombre del cliente: ")
+                nueva_fecha = input("Nueva fecha (DD/MM/AAAA): ")
+                nuevo_tipo = input("Nuevo tipo de evento: ")  
+                evento.update({"cliente": nuevo_cliente, "fecha": nueva_fecha, "tipo": nuevo_tipo})
+                print("Evento modificado.")
+                return
+        print("Evento no encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo modificar el evento. Revise los datos.")
 
 
 def listar_eventos(eventos):
@@ -90,27 +99,31 @@ def listar_eventos_ordenado(lista_eventos):
         print(linea)
 
 def abm_eventos(eventos):
-    while True:
-        mostrar_menu_eventos()
-        opcion = input("Seleccione una opción: ")
-        if opcion == "1":
-            alta_evento(eventos)
-        elif opcion == "2":
-            baja_evento(eventos)
-        elif opcion == "3":
-            modificar_evento(eventos)
-        elif opcion == "4":
-            listar_eventos(eventos)
-        elif opcion == "5":
-            nombre_buscar = input("Ingrese nombre del cliente a buscar: ")
-            res = buscar_evento_por_cliente(eventos, nombre_buscar)
-            if res:
-                print("Evento encontrado:", res)
+    opcion = ''
+    while opcion != "0":
+        try:
+            mostrar_menu_eventos()
+            opcion = input("Seleccione una opción: ")
+            if opcion == "1":
+                alta_evento(eventos)
+            elif opcion == "2":
+                baja_evento(eventos)
+            elif opcion == "3":
+                modificar_evento(eventos)
+            elif opcion == "4":
+                listar_eventos(eventos)
+            elif opcion == "5":
+                nombre_buscar = input("Ingrese nombre del cliente a buscar: ")
+                res = buscar_evento_por_cliente(eventos, nombre_buscar)
+                if res:
+                    print("Evento encontrado:", res)
+                else:
+                    print("Evento no encontrado.")
+            elif opcion == "6":
+                listar_eventos_ordenado(eventos)
+            elif opcion == "0":
+                break
             else:
-                print("Evento no encontrado.")
-        elif opcion == "6":
-            listar_eventos_ordenado(eventos)
-        elif opcion == "0":
-            break
-        else:
-            print("Opción inválida.")
+                print("Opción inválida.")
+        except (ValueError, IndexError, TypeError):
+            print("Error en el menú de eventos. Intente nuevamente.")

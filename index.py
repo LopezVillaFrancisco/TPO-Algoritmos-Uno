@@ -17,20 +17,22 @@ def main():
     empleados = []  # Lista para almacenar los empleados/encargados en memoria
     eventos = []    # Lista para almacenar los eventos en memoria
     
-    while True:
-        mostrar_menu()
-        opcion = input("Seleccione una opción: ")
-        
-        if opcion == "1":
-            abm_servicios(servicios)
-        elif opcion == "2":
-            abm_empleados(empleados)
-        elif opcion == "3":
-            abm_eventos(eventos)
-        elif opcion == "0":
-            print("Saliendo...")
-            break
-        else:
-            print("Opción inválida. Intente de nuevo.")
+    opcion = ''
+    while opcion != "0":
+        try:
+            mostrar_menu()
+            opcion = input("Seleccione una opción: ")
+            if opcion == "1":
+                abm_servicios(servicios)
+            elif opcion == "2":
+                abm_empleados(empleados)
+            elif opcion == "3":
+                abm_eventos(eventos)
+            elif opcion == "0":
+                print("Saliendo...")
+            else:
+                print("Opción inválida. Intente de nuevo.")
+        except (ValueError, IndexError, TypeError):
+            print("Error en el menú principal. Intente nuevamente.")
 
 main()

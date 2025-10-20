@@ -11,41 +11,51 @@ def mostrar_menu_empleados():
 
 def alta_empleado(empleados):
     """Pide datos por consola y agrega un empleado a la lista."""
-    nombre = input("Ingrese nombre del empleado/encargado: ")
-    dni = input("Ingrese DNI: ")
-    tarea = input("Ingrese tarea: ")
-    empleado = {
-        "nombre": nombre,
-        "dni": dni,
-        "tarea": tarea
-    }
-    empleados.append(empleado)
-    print("Empleado/Encargado agregado.")
+    try:
+        nombre = input("Ingrese nombre del empleado/encargado: ")
+        dni = input("Ingrese DNI: ")
+        tarea = input("Ingrese tarea: ")
+        empleado = {
+            "nombre": nombre,
+            "dni": dni,
+            "tarea": tarea
+        }
+        empleados.append(empleado)
+        print("Empleado/Encargado agregado.")
+    except (ValueError, IndexError, TypeError):
+        # Manejo simple con lo visto en Clase 9
+        print("Error: no se pudo agregar el empleado. Revise la entrada.")
 
 
 def baja_empleado(empleados):
     """Pide un nombre y elimina el empleado correspondiente si existe."""
-    nombre = input("Ingrese nombre del empleado/encargado a eliminar: ")
-    for empleado in empleados:
-        if empleado.get('nombre') == nombre:
-            empleados.remove(empleado)
-            print("Empleado/Encargado eliminado.")
-            return
-    print("No encontrado.")
+    try:
+        nombre = input("Ingrese nombre del empleado/encargado a eliminar: ")
+        for empleado in empleados:
+            if empleado.get('nombre') == nombre:
+                empleados.remove(empleado)
+                print("Empleado/Encargado eliminado.")
+                return
+        print("No encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo eliminar el empleado. Revise la entrada.")
 
 
 def modificar_empleado(empleados):
     """Modifica los datos de un empleado identificado por nombre."""
-    nombre = input("Ingrese nombre del empleado/encargado a modificar: ")
-    for empleado in empleados:
-        if empleado.get('nombre') == nombre:
-            nuevo_nombre = input("Ingrese el nuevo nombre: ")
-            nuevo_dni = input("Ingrese el nuevo DNI: ")
-            nueva_tarea = input("Ingrese la nueva tarea: ")
-            empleado.update({"nombre": nuevo_nombre, "dni": nuevo_dni, "tarea": nueva_tarea})
-            print("Empleado/Encargado modificado.")
-            return
-    print("No encontrado.")
+    try:
+        nombre = input("Ingrese nombre del empleado/encargado a modificar: ")
+        for empleado in empleados:
+            if empleado.get('nombre') == nombre:
+                nuevo_nombre = input("Ingrese el nuevo nombre: ")
+                nuevo_dni = input("Ingrese el nuevo DNI: ")
+                nueva_tarea = input("Ingrese la nueva tarea: ")
+                empleado.update({"nombre": nuevo_nombre, "dni": nuevo_dni, "tarea": nueva_tarea})
+                print("Empleado/Encargado modificado.")
+                return
+        print("No encontrado.")
+    except (ValueError, IndexError, TypeError):
+        print("Error: no se pudo modificar el empleado. Revise los datos ingresados.")
 
 def listar_empleados(empleados):
     """Imprime la lista de empleados tal como están (sin ordenar).
@@ -82,27 +92,24 @@ def listar_empleados_ordenado(lista_empleados):
 
 def abm_empleados(empleados):
     """Bucle principal del ABM de empleados (interfaz de consola)."""
-    while True:
-        mostrar_menu_empleados()
-        opcion = input("Seleccione una opción: ")
-        if opcion == "1":
-            alta_empleado(empleados)
-        elif opcion == "2":
-            baja_empleado(empleados)
-        elif opcion == "3":
-            modificar_empleado(empleados)
-        elif opcion == "4":
-            listar_empleados(empleados)
-        elif opcion == "5":
-            nombre_buscar = input("Ingrese el nombre a buscar: ")
-            resultado = buscar_por_nombre(empleados, nombre_buscar)
-            if resultado:
-                print("Empleado encontrado:", resultado)
+    opcion = ''
+    while opcion != "0":
+        try:
+            mostrar_menu_empleados()
+            opcion = input("Seleccione una opción: ")
+            if opcion == "1":
+                alta_empleado(empleados)
+            elif opcion == "2":
+                baja_empleado(empleados)
+            elif opcion == "3":
+                modificar_empleado(empleados)
+            elif opcion == "4":
+                listar_empleados(empleados)
+            elif opcion == "5":
+                listar_empleados_ordenado(empleados)
+            elif opcion == "0":
+                break
             else:
-                print("No se encontró el empleado.")
-        elif opcion == "6":
-            listar_empleados_ordenado(empleados)
-        elif opcion == "0":
-            break
-        else:
-            print("Opción inválida.")
+                print("Opción inválida.")
+        except (ValueError, IndexError, TypeError):
+            print("Error en el menú de empleados. Intente nuevamente.")
