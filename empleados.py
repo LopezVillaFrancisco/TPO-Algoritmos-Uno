@@ -23,7 +23,6 @@ def alta_empleado(empleados):
         empleados.append(empleado)
         print("Empleado/Encargado agregado.")
     except (ValueError, IndexError, TypeError):
-        # Manejo simple con lo visto en Clase 9
         print("Error: no se pudo agregar el empleado. Revise la entrada.")
 
 
