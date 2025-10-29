@@ -97,7 +97,19 @@ def listar_eventos_ordenado(lista_eventos):
     lineas = [f"- Cliente: {ev.get('cliente')}, Fecha: {ev.get('fecha')}, Tipo: {ev.get('tipo')}" for ev in lista_ordenada]
     for linea in lineas:
         print(linea)
-
+        
+def filtrar_eventos_por_fecha(eventos):
+    fecha_busqueda = input("Ingrese fecha a filtrar (DD/MM/AAAA): ")
+    
+    eventos_filtrados = list(filter(lambda evento: evento['fecha'] == fecha_busqueda, eventos))
+    
+    if eventos_filtrados:
+        print(f"\nEventos para la fecha {fecha_busqueda}:")
+        for e in eventos_filtrados:
+            print(f"- Cliente: {e['cliente']}, Tipo: {e['tipo']}")
+    else:
+        print(f"No hay eventos para la fecha {fecha_busqueda}")
+        
 def abm_eventos(eventos):
     opcion = ''
     while opcion != "0":
@@ -121,6 +133,8 @@ def abm_eventos(eventos):
                     print("Evento no encontrado.")
             elif opcion == "6":
                 listar_eventos_ordenado(eventos)
+            elif opcion == "7":
+                filtrar_eventos_por_fecha(eventos)
             elif opcion == "0":
                 break
             else:
