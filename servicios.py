@@ -16,15 +16,15 @@ def mostrar_menu_servicios():
 def alta_servicio(servicios):
     """Pide datos por consola y agrega un servicio a la lista."""
     try:
-        nombre = input("Ingrese nombre del servicio: ")
-        while nombre == "" or nombre ==' ':
-            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio: ")
-        descripcion = input("Ingrese descripción: ")
-        while descripcion == "" or descripcion == ' ':
-            descripcion = input("La descripción no puede estar vacía. Ingrese descripción: ")
-        costo_texto = input("Ingrese costo: ")
-        while costo_texto == "" or costo_texto == ' ':
-            costo_texto = input("El costo no puede estar vacío. Ingrese costo: ")
+        nombre = input("Ingrese nombre del servicio: ").strip()
+        while nombre == "":
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio: ").strip()
+        descripcion = input("Ingrese descripción: ").strip()
+        while descripcion == "":
+            descripcion = input("La descripción no puede estar vacía. Ingrese descripción: ").strip()
+        costo_texto = input("Ingrese costo: ").strip()
+        while costo_texto == "":
+            costo_texto = input("El costo no puede estar vacío. Ingrese costo: ").strip()
         costo = float(costo_texto)
         servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
         servicios.append(servicio)
@@ -38,9 +38,9 @@ def alta_servicio(servicios):
 def baja_servicio(servicios):
     """Elimina un servicio por nombre si existe."""
     try:
-        nombre = input("Ingrese nombre del servicio a eliminar: ")
-        while nombre == "" or nombre ==' ':
-            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio a eliminar: ")
+        nombre = input("Ingrese nombre del servicio a eliminar: ").strip()
+        while nombre == "":
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio a eliminar: ").strip()
         for servicio in servicios:
             if servicio.get('nombre') == nombre:
                 servicios.remove(servicio)
@@ -55,18 +55,20 @@ def baja_servicio(servicios):
 def modificar_servicio(servicios):
     """Modifica los campos de un servicio identificado por nombre."""
     try:
-        nombre = input("Ingrese nombre del servicio a modificar: ")
+        nombre = input("Ingrese nombre del servicio a modificar: ").strip()
+        while nombre == "":
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio a modificar: ").strip()
         for servicio in servicios:
             if servicio.get('nombre') == nombre:
-                nuevo_nombre = input("Ingrese el nuevo nombre: ")
-                while nuevo_nombre == "" or nuevo_nombre ==' ':
-                    nuevo_nombre = input("El nombre no puede estar vacío. Ingrese el nuevo nombre: ")
+                nuevo_nombre = input("Ingrese el nuevo nombre: ").strip()
+                while nuevo_nombre == "":
+                    nuevo_nombre = input("El nombre no puede estar vacío. Ingrese el nuevo nombre: ").strip()
                 nueva_descripcion = input("Ingrese la nueva descripción: ")
                 while nueva_descripcion == "" or nueva_descripcion == ' ':
                     nueva_descripcion = input("La descripción no puede estar vacía. Ingrese la nueva descripción: ")
-                nuevo_costo = input("Ingrese el nuevo costo: ")
-                while nuevo_costo == "" or nuevo_costo == ' ':
-                    nuevo_costo = input("El costo no puede estar vacío. Ingrese el nuevo costo: ")
+                nuevo_costo = input("Ingrese el nuevo costo: ").strip()
+                while nuevo_costo == "":
+                    nuevo_costo = input("El costo no puede estar vacío. Ingrese el nuevo costo: ").strip()
                 nuevo_costo_val = float(nuevo_costo)
                 servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo_val})
                 print("Servicio modificado.")
