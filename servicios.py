@@ -1,3 +1,6 @@
+from persistencia import guardar_servicios
+
+
 def mostrar_menu_servicios():
     """Muestra el menú de opciones para servicios."""
     print("\n--- ABM Servicios ---")
@@ -14,12 +17,20 @@ def alta_servicio(servicios):
     """Pide datos por consola y agrega un servicio a la lista."""
     try:
         nombre = input("Ingrese nombre del servicio: ")
+        while nombre == "" or nombre ==' ':
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio: ")
         descripcion = input("Ingrese descripción: ")
+        while descripcion == "" or descripcion == ' ':
+            descripcion = input("La descripción no puede estar vacía. Ingrese descripción: ")
         costo_texto = input("Ingrese costo: ")
+        while costo_texto == "" or costo_texto == ' ':
+            costo_texto = input("El costo no puede estar vacío. Ingrese costo: ")
         costo = float(costo_texto)
         servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
         servicios.append(servicio)
         print("Servicio agregado.")
+        # Guardar inmediatamente en JSON
+        guardar_servicios(servicios)
     except (ValueError, IndexError, TypeError):
         print("Error: no se pudo agregar el servicio. Revise los datos.")
 
@@ -28,10 +39,13 @@ def baja_servicio(servicios):
     """Elimina un servicio por nombre si existe."""
     try:
         nombre = input("Ingrese nombre del servicio a eliminar: ")
+        while nombre == "" or nombre ==' ':
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del servicio a eliminar: ")
         for servicio in servicios:
             if servicio.get('nombre') == nombre:
                 servicios.remove(servicio)
                 print("Servicio eliminado.")
+                guardar_servicios(servicios)
                 return
         print("Servicio no encontrado.")
     except (ValueError, IndexError, TypeError):
@@ -45,11 +59,18 @@ def modificar_servicio(servicios):
         for servicio in servicios:
             if servicio.get('nombre') == nombre:
                 nuevo_nombre = input("Ingrese el nuevo nombre: ")
+                while nuevo_nombre == "" or nuevo_nombre ==' ':
+                    nuevo_nombre = input("El nombre no puede estar vacío. Ingrese el nuevo nombre: ")
                 nueva_descripcion = input("Ingrese la nueva descripción: ")
+                while nueva_descripcion == "" or nueva_descripcion == ' ':
+                    nueva_descripcion = input("La descripción no puede estar vacía. Ingrese la nueva descripción: ")
                 nuevo_costo = input("Ingrese el nuevo costo: ")
+                while nuevo_costo == "" or nuevo_costo == ' ':
+                    nuevo_costo = input("El costo no puede estar vacío. Ingrese el nuevo costo: ")
                 nuevo_costo_val = float(nuevo_costo)
                 servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo_val})
                 print("Servicio modificado.")
+                guardar_servicios(servicios)
                 return
         print("Servicio no encontrado.")
     except (ValueError, IndexError, TypeError):

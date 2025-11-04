@@ -1,3 +1,6 @@
+from persistencia import guardar_empleados
+
+
 def mostrar_menu_empleados():
     """Muestra el menú de opciones para empleados/encargados."""
     print("\n--- ABM Empleados/Encargados ---")
@@ -13,8 +16,14 @@ def alta_empleado(empleados):
     """Pide datos por consola y agrega un empleado a la lista."""
     try:
         nombre = input("Ingrese nombre del empleado/encargado: ")
+        while nombre == "" or nombre ==' ':
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del empleado/encargado: ")   
         dni = input("Ingrese DNI: ")
+        while dni == "" or dni ==' ':
+            dni = input("El DNI no puede estar vacío. Ingrese DNI: ")
         tarea = input("Ingrese tarea: ")
+        while tarea == "" or tarea ==' ':
+            tarea = input("La tarea no puede estar vacía. Ingrese tarea: ")
         empleado = {
             "nombre": nombre,
             "dni": dni,
@@ -22,6 +31,7 @@ def alta_empleado(empleados):
         }
         empleados.append(empleado)
         print("Empleado/Encargado agregado.")
+        guardar_empleados(empleados)
     except (ValueError, IndexError, TypeError):
         print("Error: no se pudo agregar el empleado. Revise la entrada.")
 
@@ -29,11 +39,14 @@ def alta_empleado(empleados):
 def baja_empleado(empleados):
     """Pide un nombre y elimina el empleado correspondiente si existe."""
     try:
-        nombre = input("Ingrese nombre del empleado/encargado a eliminar: ")
+        nombre = input("Ingrese nombre del empleado/encargado a eliminar: ") 
+        while nombre == "" or nombre ==' ':
+            nombre = input("El nombre no puede estar vacío. Ingrese nombre del empleado/encargado a eliminar: ")
         for empleado in empleados:
             if empleado.get('nombre') == nombre:
                 empleados.remove(empleado)
                 print("Empleado/Encargado eliminado.")
+                guardar_empleados(empleados)
                 return
         print("No encontrado.")
     except (ValueError, IndexError, TypeError):
@@ -47,10 +60,17 @@ def modificar_empleado(empleados):
         for empleado in empleados:
             if empleado.get('nombre') == nombre:
                 nuevo_nombre = input("Ingrese el nuevo nombre: ")
+                while nuevo_nombre == "" or nuevo_nombre ==' ':
+                    nuevo_nombre = input("El nombre no puede estar vacío. Ingrese el nuevo nombre: ")
                 nuevo_dni = input("Ingrese el nuevo DNI: ")
+                while nuevo_dni == "" or nuevo_dni ==' ':
+                    nuevo_dni = input("El DNI no puede estar vacío. Ingrese el nuevo DNI: ")
                 nueva_tarea = input("Ingrese la nueva tarea: ")
+                while nueva_tarea == "" or nueva_tarea ==' ':
+                    nueva_tarea = input("La tarea no puede estar vacía. Ingrese la nueva tarea: ")
                 empleado.update({"nombre": nuevo_nombre, "dni": nuevo_dni, "tarea": nueva_tarea})
                 print("Empleado/Encargado modificado.")
+                guardar_empleados(empleados)
                 return
         print("No encontrado.")
     except (ValueError, IndexError, TypeError):
