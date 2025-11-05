@@ -32,7 +32,8 @@ def main():
                 abm_empleados(empleados)
                 guardar_empleados(empleados)
             elif opcion == "3":
-                abm_eventos(eventos)
+                # Pasar empleados a abm_eventos para asignar encargados
+                abm_eventos(eventos, empleados)
                 guardar_eventos(eventos)
             elif opcion == "0":
                 print("Guardando datos...")

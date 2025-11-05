@@ -1,7 +1,17 @@
 [
     {
-        "nombre": "Carlos",
+        "nombre": "Juan Pérez",
         "dni": "12345678",
-        "tarea": "Limpieza"
+        "tarea": "Coordinador"
+    },
+    {
+        "nombre": "María García",
+        "dni": "87654321",
+        "tarea": "Asistente"
+    },
+    {
+        "nombre": "Carlos López",
+        "dni": "11223344",
+        "tarea": "Técnico"
     }
 ]

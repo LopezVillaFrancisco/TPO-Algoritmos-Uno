@@ -1,7 +1,25 @@
 [
     {
-        "cliente": "Juan",
-        "fecha": "20/10/2025",
-        "tipo": "Fiesta"
+        "cliente": "Accenture",
+        "fecha": "15/12/2024",
+        "tipo": "Conferencia",
+        "encargado": {
+            "nombre": "Juan Pérez",
+            "dni": "12345678"
+        }
+    },
+    {
+        "cliente": "Globant",
+        "fecha": "20/01/2025",
+        "tipo": "Taller",
+        "encargado": {
+            "nombre": "María García",
+            "dni": "87654321"
+        }
+    },
+    {
+        "cliente": "Mercado Libre",
+        "fecha": "10/02/2025",
+        "tipo": "Seminario"
     }
 ]
