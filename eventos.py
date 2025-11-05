@@ -2,75 +2,81 @@ from persistencia import guardar_eventos
 
 
 def mostrar_empleados_disponibles(empleados):
-    """Muestra lista de empleados disponibles con nombre y DNI"""
-    if empleados == []:
-        # Si la lista está vacía, mostrar mensaje
-        print("\nNo hay empleados registrados.")
-        return
+    """Muestra la lista de empleados disponibles con nombre y DNI."""
     print("\n--- Empleados Disponibles ---")
-    # Recorrer la lista de empleados y mostrar cada uno
+    if len(empleados) == 0:
+        print("No hay empleados registrados.")
+        return
+    
+    # Recorrer empleados y mostrar cada uno
     for empleado in empleados:
-        nombre = empleado.get('nombre', 'Sin nombre')
-        dni = empleado.get('dni', 'Sin DNI')
-        print(f"- {nombre} (DNI: {dni})")
-
+        try:
+            # Acceso directo que falla si faltan campos requeridos
+            nombre = empleado['nombre']
+            dni = empleado['dni']
+            print(f"- {nombre} (DNI: {dni})")
+        except KeyError as e:
+            # Si falta un campo requerido, mostrar error específico
+            print(f"Error: Empleado con datos incompletos (falta campo {e})")
+        except (ValueError, TypeError) as e:
+            # Si hay error de tipo o valor, continuar con siguiente empleado
+            print(f"Error: Datos inválidos en empleado - {e}")
 
 def seleccionar_encargado(empleados):
-    """Permite seleccionar un encargado por nombre o DNI con validación robusta.
+    """Permite seleccionar un encargado por nombre o DNI.
     
-    Retorna un diccionario con formato {'nombre': str, 'dni': str} o None si falla.
+    Retorna un diccionario con {nombre, dni} del encargado seleccionado.
+    Retorna None si no hay empleados o si hay error crítico.
     """
-    # Mostrar empleados disponibles primero
-    mostrar_empleados_disponibles(empleados)
-    
-    # Si no hay empleados, retornar None
-    if empleados == []:
-        return None
-    
-    # Intentar seleccionar hasta que sea válido
-    while True:
-        try:
-            # Pedir identificador del encargado
-            identificador = input("\nIngrese nombre o DNI del encargado: ")
-            # Limpiar espacios y convertir a minúsculas para comparación
-            identificador_limpio = identificador.strip().lower()
-            
-            # Validar que no esté vacío
-            if identificador_limpio == "" or identificador_limpio == ' ':
-                print("El identificador no puede estar vacío. Intente nuevamente.")
-                continue
-            
-            # Buscar empleado por nombre o DNI
-            encargado_encontrado = None
-            for empleado in empleados:
-                # Obtener nombre y DNI del empleado
-                nombre_empleado = empleado.get('nombre', '').strip().lower()
-                dni_empleado = empleado.get('dni', '').strip().lower()
+    try:
+        # Verificar que hay empleados disponibles
+        if len(empleados) == 0:
+            print("Error: No hay empleados disponibles para asignar.")
+            return None
+        
+        # Mostrar lista de empleados disponibles
+        mostrar_empleados_disponibles(empleados)
+        
+        # Solicitar criterio de búsqueda
+        criterio = input("\nIngrese nombre o DNI del encargado: ").strip()
+        
+        # Validar que no esté vacío
+        if criterio == "":
+            print("Error: Debe ingresar un nombre o DNI.")
+            return None
+        
+        # Normalizar para búsqueda case-insensitive
+        criterio_lower = criterio.lower()
+        
+        # Buscar por nombre o DNI
+        for empleado in empleados:
+            try:
+                # Acceso directo a campos requeridos
+                nombre = empleado['nombre']
+                dni = str(empleado['dni'])
                 
-                # Comparar con el identificador ingresado
-                if nombre_empleado == identificador_limpio or dni_empleado == identificador_limpio:
-                    encargado_encontrado = empleado
-                    break
-            
-            # Validar si se encontró el empleado
-            if encargado_encontrado == None:
-                print("Empleado no encontrado. Verifique el nombre o DNI e intente nuevamente.")
-                # Preguntar si quiere reintentar
-                reintentar = input("¿Desea intentar nuevamente? (s/n): ").strip().lower()
-                if reintentar == 's' or reintentar == 'si':
-                    continue
-                else:
-                    return None
-            
-            # Retornar diccionario con nombre y DNI del encargado
-            return {
-                "nombre": encargado_encontrado.get('nombre'),
-                "dni": encargado_encontrado.get('dni')
-            }
-            
-        except (ValueError, IndexError, TypeError):
-            print("Error al seleccionar encargado. Intente nuevamente.")
-            continue
+                # Comparar con criterio ingresado
+                if nombre.lower() == criterio_lower or dni == criterio:
+                    print(f"✓ Encargado seleccionado: {nombre} (DNI: {dni})")
+                    return {'nombre': nombre, 'dni': dni}
+                    
+            except KeyError as e:
+                # Si un empleado no tiene los campos requeridos, saltar al siguiente
+                print(f"Advertencia: Empleado con datos incompletos (falta campo {e}), se omite.")
+                continue
+            except (ValueError, TypeError) as e:
+                # Error de tipo o conversión, continuar con siguiente empleado
+                print(f"Advertencia: Error en datos de empleado - {e}")
+                continue
+        
+        # Si llegamos aquí, no se encontró el empleado
+        print(f"Error: No se encontró empleado con nombre o DNI: {criterio}")
+        return None
+        
+    except (ValueError, IndexError, TypeError) as e:
+        # Capturar cualquier otro error inesperado
+        print(f"Error al seleccionar encargado: {e}")
+        return None
 
 
 def mostrar_menu_eventos():
@@ -88,40 +94,48 @@ def mostrar_menu_eventos():
 
 def alta_evento(eventos, empleados):
     """Pide datos por consola y agrega un evento a la lista con encargado asignado"""
-    # Solicitar datos del cliente
-    cliente = input("Ingrese nombre del cliente: ").strip()
-    while cliente == "":
-        cliente = input("El nombre del cliente no puede estar vacío. Ingrese nombre del cliente: ").strip()
+    try:
+        # Solicitar datos del cliente
+        cliente = input("Ingrese nombre del cliente: ").strip()
+        while cliente == "":
+            cliente = input("El nombre del cliente no puede estar vacío. Ingrese nombre del cliente: ").strip()
 
-    # Solicitar fecha del evento
-    fecha = input("Ingrese fecha (DD/MM/AAAA): ").strip()
-    while fecha == "":
-        fecha = input("La fecha no puede estar vacía. Ingrese fecha (DD/MM/AAAA): ").strip()
+        # Solicitar fecha del evento
+        fecha = input("Ingrese fecha (DD/MM/AAAA): ").strip()
+        while fecha == "":
+            fecha = input("La fecha no puede estar vacía. Ingrese fecha (DD/MM/AAAA): ").strip()
 
-    # Solicitar tipo de evento
-    tipo = input("Ingrese tipo de evento: ").strip()
-    while tipo == "":
-        tipo = input("El tipo de evento no puede estar vacío. Ingrese tipo de evento: ").strip()
+        # Solicitar tipo de evento
+        tipo = input("Ingrese tipo de evento: ").strip()
+        while tipo == "":
+            tipo = input("El tipo de evento no puede estar vacío. Ingrese tipo de evento: ").strip()
 
-    # Seleccionar encargado del evento
-    print("\n--- Asignación de Encargado ---")
-    encargado = seleccionar_encargado(empleados)
-    
-    # Validar que se haya seleccionado un encargado
-    if encargado == None:
-        print("No se pudo asignar un encargado. El evento no será creado.")
-        return
-    
-    # Crear diccionario del evento con todos los campos
-    evento = {"cliente": cliente, "fecha": fecha, "tipo": tipo, "encargado": encargado}
-    
-    # Agregar evento a la lista
-    eventos.append(evento)
-    print("Evento agregado exitosamente.")
-    print(f"Encargado asignado: {encargado.get('nombre')} (DNI: {encargado.get('dni')})")
-    
-    # Guardar en persistencia
-    guardar_eventos(eventos)
+        # Seleccionar encargado del evento
+        print("\n--- Asignación de Encargado ---")
+        encargado = seleccionar_encargado(empleados)
+        
+        # Validar que se haya seleccionado un encargado
+        if encargado == None:
+            print("No se pudo asignar un encargado. El evento no será creado.")
+            return
+        
+        # Crear diccionario del evento con todos los campos
+        evento = {"cliente": cliente, "fecha": fecha, "tipo": tipo, "encargado": encargado}
+        
+        # Agregar evento a la lista
+        eventos.append(evento)
+        print("Evento agregado exitosamente.")
+        print(f"Encargado asignado: {encargado['nombre']} (DNI: {encargado['dni']})")
+        
+        # Guardar en persistencia
+        guardar_eventos(eventos)
+        
+    except KeyError as e:
+        # Error al acceder a campo del encargado
+        print(f"Error: Datos incompletos del encargado (falta campo {e})")
+    except (ValueError, IndexError, TypeError) as e:
+        # Otros errores durante la creación del evento
+        print(f"Error al crear el evento: {e}")
 
 
 def baja_evento(eventos):
@@ -142,54 +156,69 @@ def baja_evento(eventos):
 
 def modificar_evento(eventos, empleados):
     """Modifica los datos de un evento identificado por cliente, incluyendo encargado"""
-    # Solicitar nombre del cliente del evento a modificar
-    cliente = input("Ingrese nombre del evento a modificar: ").strip()
-    while cliente == "":
-        cliente = input("El nombre del cliente no puede estar vacío. Ingrese nombre del evento a modificar: ").strip()
+    try:
+        # Solicitar nombre del cliente del evento a modificar
+        cliente = input("Ingrese nombre del evento a modificar: ").strip()
+        while cliente == "":
+            cliente = input("El nombre del cliente no puede estar vacío. Ingrese nombre del evento a modificar: ").strip()
 
-    # Buscar el evento por nombre de cliente
-    objetivo = cliente.lower()
-    for evento in eventos:
-        if evento.get('cliente', '').strip().lower() == objetivo:
-            # Solicitar nuevo nombre del cliente
-            nuevo_cliente = input("Nuevo nombre del cliente: ").strip()
-            while nuevo_cliente == "":
-                nuevo_cliente = input("El nombre del cliente no puede estar vacío. Ingrese nuevo nombre del cliente: ").strip()
+        # Buscar el evento por nombre de cliente
+        objetivo = cliente.lower()
+        for evento in eventos:
+            if evento.get('cliente', '').strip().lower() == objetivo:
+                # Solicitar nuevo nombre del cliente
+                nuevo_cliente = input("Nuevo nombre del cliente: ").strip()
+                while nuevo_cliente == "":
+                    nuevo_cliente = input("El nombre del cliente no puede estar vacío. Ingrese nuevo nombre del cliente: ").strip()
 
-            # Solicitar nueva fecha
-            nueva_fecha = input("Nueva fecha (DD/MM/AAAA): ").strip()
-            while nueva_fecha == "":
-                nueva_fecha = input("La fecha no puede estar vacía. Ingrese nueva fecha (DD/MM/AAAA): ").strip()
+                # Solicitar nueva fecha
+                nueva_fecha = input("Nueva fecha (DD/MM/AAAA): ").strip()
+                while nueva_fecha == "":
+                    nueva_fecha = input("La fecha no puede estar vacía. Ingrese nueva fecha (DD/MM/AAAA): ").strip()
 
-            # Solicitar nuevo tipo de evento
-            nuevo_tipo = input("Nuevo tipo de evento: ").strip()
-            while nuevo_tipo == "":
-                nuevo_tipo = input("El tipo de evento no puede estar vacío. Ingrese nuevo tipo de evento: ").strip()
+                # Solicitar nuevo tipo de evento
+                nuevo_tipo = input("Nuevo tipo de evento: ").strip()
+                while nuevo_tipo == "":
+                    nuevo_tipo = input("El tipo de evento no puede estar vacío. Ingrese nuevo tipo de evento: ").strip()
 
-            # Preguntar si desea cambiar el encargado
-            cambiar_encargado = input("¿Desea cambiar el encargado del evento? (s/n): ").strip().lower()
-            
-            # Actualizar datos básicos del evento
-            evento.update({"cliente": nuevo_cliente, "fecha": nueva_fecha, "tipo": nuevo_tipo})
-            
-            # Si el usuario quiere cambiar el encargado
-            if cambiar_encargado == 's' or cambiar_encargado == 'si':
-                print("\n--- Cambio de Encargado ---")
-                nuevo_encargado = seleccionar_encargado(empleados)
+                # Preguntar si desea cambiar el encargado
+                cambiar_encargado = input("¿Desea cambiar el encargado del evento? (s/n): ").strip().lower()
                 
-                # Si se seleccionó un nuevo encargado, actualizarlo
-                if nuevo_encargado == None:
-                    print("No se cambió el encargado.")
-                else:
-                    evento.update({"encargado": nuevo_encargado})
-                    print(f"Encargado actualizado: {nuevo_encargado.get('nombre')} (DNI: {nuevo_encargado.get('dni')})")
-            
-            # Guardar cambios
-            print("Evento modificado exitosamente.")
-            guardar_eventos(eventos)
-            return
+                # Actualizar datos básicos del evento
+                evento.update({"cliente": nuevo_cliente, "fecha": nueva_fecha, "tipo": nuevo_tipo})
+                
+                # Si el usuario quiere cambiar el encargado
+                if cambiar_encargado == 's' or cambiar_encargado == 'si':
+                    try:
+                        print("\n--- Cambio de Encargado ---")
+                        nuevo_encargado = seleccionar_encargado(empleados)
+                        
+                        # Si se seleccionó un nuevo encargado, actualizarlo
+                        if nuevo_encargado == None:
+                            print("No se cambió el encargado.")
+                        else:
+                            evento.update({"encargado": nuevo_encargado})
+                            print(f"Encargado actualizado: {nuevo_encargado['nombre']} (DNI: {nuevo_encargado['dni']})")
+                    
+                    except KeyError as e:
+                        # Error al acceder a campo del nuevo encargado
+                        print(f"Error: Datos incompletos del encargado (falta campo {e})")
+                        print("No se cambió el encargado.")
+                    except (ValueError, TypeError) as e:
+                        # Error en la selección del encargado
+                        print(f"Error al cambiar encargado: {e}")
+                        print("No se cambió el encargado.")
+                
+                # Guardar cambios
+                print("Evento modificado exitosamente.")
+                guardar_eventos(eventos)
+                return
 
-    print("Evento no encontrado.")
+        print("Evento no encontrado.")
+        
+    except (ValueError, IndexError, TypeError) as e:
+        # Error general durante la modificación
+        print(f"Error al modificar el evento: {e}")
 
 
 def listar_eventos(eventos):
