@@ -1,11 +1,8 @@
 from servicios import abm_servicios
 from empleados import abm_empleados
 from eventos import abm_eventos
-from persistencia import (
-    cargar_servicios, guardar_servicios,
-    cargar_empleados, guardar_empleados,
-    cargar_eventos, guardar_eventos
-)
+from persistencia import (cargar_servicios,cargar_empleados,cargar_eventos,)
+
 
 def mostrar_menu():
     print("\n=== Menú Principal ===")
@@ -27,18 +24,11 @@ def main():
             opcion = input("Seleccione una opción: ")
             if opcion == "1":
                 abm_servicios(servicios)
-                guardar_servicios(servicios)
             elif opcion == "2":
                 abm_empleados(empleados)
-                guardar_empleados(empleados)
             elif opcion == "3":
                 abm_eventos(eventos)
-                guardar_eventos(eventos)
             elif opcion == "0":
-                print("Guardando datos...")
-                guardar_servicios(servicios)
-                guardar_empleados(empleados)
-                guardar_eventos(eventos)
                 print("Saliendo...")
             else:
                 print("Opción inválida. Intente de nuevo.")
