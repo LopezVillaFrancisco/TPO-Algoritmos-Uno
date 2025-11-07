@@ -36,6 +36,26 @@ def parsear_eventos_JSON(eventos):
     return salida
 
 
+def filtrar_encargados(empleados):
+    # Filtra empleados cuya tarea contenga 'encargado'.
+    
+    encargados = []
+    for empleado in empleados:
+        try:
+            # Obtener el campo tarea y normalizar a minúsculas
+            tarea = empleado['tarea'].lower()
+            # Verificar si contiene la palabra 'encargado'
+            if 'encargado' in tarea:
+                encargados.append(empleado)
+        except KeyError:
+            # Si falta el campo 'tarea', omitir este empleado
+            continue
+        except (ValueError, TypeError):
+            # Si hay error al procesar la tarea, omitir
+            continue
+    return encargados
+
+
 def mostrar_empleados_disponibles(empleados):
     """Muestra la lista de empleados disponibles con nombre y DNI."""
     print("\n--- Empleados Disponibles ---")
@@ -60,17 +80,22 @@ def mostrar_empleados_disponibles(empleados):
 def seleccionar_encargado(empleados):
     """Permite seleccionar un encargado por nombre o DNI.
     
+    Filtra solo empleados con rol de 'Encargado' en su tarea.
     Retorna un diccionario con {nombre, dni} del encargado seleccionado.
-    Retorna None si no hay empleados o si hay error crítico.
+    Retorna None si no hay encargados disponibles o si hay error.
     """
     try:
-        # Verificar que hay empleados disponibles
-        if len(empleados) == 0:
-            print("Error: No hay empleados disponibles para asignar.")
+        # Filtrar solo empleados que sean encargados
+        encargados = filtrar_encargados(empleados)
+        
+        # Verificar que haya encargados disponibles
+        if len(encargados) == 0:
+            print("Error: No hay empleados con rol de 'Encargado' disponibles.")
+            print("Sugerencia: Verifique que el campo 'tarea' contenga la palabra 'Encargado'.")
             return None
         
-        # Mostrar lista de empleados disponibles
-        mostrar_empleados_disponibles(empleados)
+        # Mostrar lista de encargados disponibles
+        mostrar_empleados_disponibles(encargados)
         
         # Solicitar criterio de búsqueda
         criterio = input("\nIngrese nombre o DNI del encargado: ").strip()
@@ -83,29 +108,28 @@ def seleccionar_encargado(empleados):
         # Normalizar para búsqueda case-insensitive
         criterio_lower = criterio.lower()
         
-        # Buscar por nombre o DNI
-        for empleado in empleados:
+        # Buscar por nombre o DNI en la lista de encargados
+        for encargado in encargados:
             try:
                 # Acceso directo a campos requeridos
-                nombre = empleado['nombre']
-                dni = str(empleado['dni'])
+                nombre = encargado['nombre']
+                dni = str(encargado['dni'])
                 
-                # Comparar con criterio ingresado
-                if nombre.lower() == criterio_lower or dni == criterio:
+                # Comparar con criterio ingresado (búsqueda parcial tolerante a tildes)
+                if criterio_lower in nombre.lower() or dni == criterio:
                     print(f"✓ Encargado seleccionado: {nombre} (DNI: {dni})")
                     return {'nombre': nombre, 'dni': dni}
                     
             except KeyError as e:
-                # Si un empleado no tiene los campos requeridos, saltar al siguiente
-                print(f"Advertencia: Empleado con datos incompletos (falta campo {e}), se omite.")
+                # Si un encargado no tiene los campos requeridos, saltar al siguiente
+                print(f"Advertencia: Encargado con datos incompletos (falta campo {e}), se omite.")
                 continue
             except (ValueError, TypeError) as e:
-                # Error de tipo o conversión, continuar con siguiente empleado
-                print(f"Advertencia: Error en datos de empleado - {e}")
+                # Error de tipo o conversión, continuar con siguiente encargado
+                print(f"Advertencia: Error en datos de encargado - {e}")
                 continue
         
-        # Si llegamos aquí, no se encontró el empleado
-        print(f"Error: No se encontró empleado con nombre o DNI: {criterio}")
+        print(f"Error: No se encontró encargado con nombre o DNI: {criterio}")
         return None
         
     except (ValueError, IndexError, TypeError) as e:

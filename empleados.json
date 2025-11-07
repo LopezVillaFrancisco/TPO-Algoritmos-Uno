@@ -2,16 +2,26 @@
     {
         "nombre": "Juan Pérez",
         "dni": "12345678",
-        "tarea": "Coordinador"
+        "tarea": "Encargado de Eventos"
     },
     {
         "nombre": "María García",
         "dni": "87654321",
-        "tarea": "Asistente"
+        "tarea": "Asistente Administrativo"
     },
     {
         "nombre": "Carlos López",
         "dni": "11223344",
-        "tarea": "Técnico"
+        "tarea": "Encargado de Logística"
+    },
+    {
+        "nombre": "Ana Martínez",
+        "dni": "99887766",
+        "tarea": "Técnico de Sonido"
+    },
+    {
+        "nombre": "Roberto Sánchez",
+        "dni": "55443322",
+        "tarea": "Encargado General"
     }
 ]

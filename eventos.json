@@ -34,5 +34,23 @@
             "nombre": "Juan Pérez",
             "dni": "12345678"
         }
+    },
+    {
+        "cliente": "Amazon",
+        "fecha": "07/10/2025",
+        "tipo": "charla",
+        "encargado": {
+            "nombre": "Roberto Sánchez",
+            "dni": "55443322"
+        }
+    },
+    {
+        "cliente": "google",
+        "fecha": "02/02/2025",
+        "tipo": "feria de empleo",
+        "encargado": {
+            "nombre": "Roberto Sánchez",
+            "dni": "55443322"
+        }
     }
 ]
