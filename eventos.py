@@ -148,6 +148,7 @@ def mostrar_menu_eventos():
     print("5. Buscar evento por cliente")
     print("6. Listar eventos ordenados por cliente")
     print("7. Filtrar Eventos por Fecha")
+    print("8. Calcular costo total y registrar seña")
     print("0. Volver al menú principal")
 
 
@@ -441,7 +442,82 @@ def filtrar_eventos_por_fecha(eventos):
     else:
         print(f"No hay eventos para la fecha {fecha_busqueda_str}")
         
-def abm_eventos(eventos, empleados):
+def calcular_costo_y_registrar_sena(eventos, servicios):
+    #Calcula el costo total de un evento y permite registrar una seña
+    try:
+        cliente = input("Ingrese el nombre del cliente del evento: ").strip()
+        while cliente == "":
+            cliente = input("El nombre del cliente no puede estar vacío. Ingrese el nombre del cliente: ").strip()
+        
+        evento = buscar_evento_por_cliente(eventos, cliente)
+        if not evento:
+            print("Evento no encontrado.")
+            return
+        
+        print(f"\nEvento encontrado: {evento.get('cliente')} - {evento.get('tipo')}")
+        
+        # Mostrar servicios disponibles
+        print("\n--- Servicios Disponibles ---")
+        for i, servicio in enumerate(servicios, 1):
+            print(f"{i}. {servicio.get('nombre')} - ${servicio.get('costo'):.2f}")
+        
+        # Seleccionar servicios
+        servicios_contratados = []
+        costo_total = 0.0
+        
+        while True:
+            try:
+                opcion = input("\nIngrese el número del servicio a agregar (0 para terminar): ").strip()
+                if opcion == "0":
+                    break
+                
+                indice = int(opcion) - 1
+                if 0 <= indice < len(servicios):
+                    servicio_seleccionado = servicios[indice]
+                    servicios_contratados.append(servicio_seleccionado)
+                    costo_total += servicio_seleccionado.get('costo', 0.0)
+                    print(f"Servicio '{servicio_seleccionado.get('nombre')}' agregado. Costo parcial: ${costo_total:.2f}")
+                else:
+                    print("Número de servicio inválido.")
+            except ValueError:
+                print("Ingrese un número válido.")
+        
+        # Registrar seña
+        sena = 0.0
+        if costo_total > 0:
+            try:
+                sena_input = input(f"\nCosto total del evento: ${costo_total:.2f}. Ingrese monto de la seña (0 para no registrar seña): $").strip()
+                sena = float(sena_input) if sena_input else 0.0
+                
+                if sena < 0:
+                    print("La seña no puede ser negativa. Se establecerá en 0.")
+                    sena = 0.0
+                elif sena > costo_total:
+                    print("La seña no puede ser mayor al costo total. Se establecerá en el costo total.")
+                    sena = costo_total
+                
+            except ValueError:
+                print("Monto inválido. No se registrará seña.")
+                sena = 0.0
+        
+        # Actualizar evento
+        evento['costo_total'] = costo_total
+        evento['sena'] = sena
+        evento['servicios_contratados'] = servicios_contratados
+        
+        print(f"\n✓ Evento actualizado:")
+        print(f"   - Costo total: ${costo_total:.2f}")
+        print(f"   - Seña registrada: ${sena:.2f}")
+        if sena > 0:
+            saldo_pendiente = costo_total - sena
+            print(f"   - Saldo pendiente: ${saldo_pendiente:.2f}")
+        
+        guardar_eventos(parsear_eventos_JSON(eventos))
+        
+    except (ValueError, IndexError, TypeError) as e:
+        print(f"Error al calcular costo y registrar seña: {e}")
+        
+def abm_eventos(eventos, empleados, servicios):
     # convertir fechas cargadas (strings) a datetime.date en memoria
     parsear_eventos_date(eventos)
 
@@ -476,6 +552,11 @@ def abm_eventos(eventos, empleados):
                 listar_eventos_ordenado(eventos)
             elif opcion == "7":
                 filtrar_eventos_por_fecha(eventos)
+            elif opcion == "8": 
+                if servicios is None: 
+                    print("Error: No se han cargado los servicios.")
+                else:
+                    calcular_costo_y_registrar_sena(eventos, servicios)
             elif opcion == "0":
                 break
             else:
