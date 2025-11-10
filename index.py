@@ -28,7 +28,7 @@ def main():
                 abm_empleados(empleados)
             elif opcion == "3":
                 # Pasar empleados a abm_eventos para asignar encargados
-                abm_eventos(eventos, empleados)
+                abm_eventos(eventos, empleados, servicios)
             elif opcion == "0":
                 print("Saliendo...")
             else:
