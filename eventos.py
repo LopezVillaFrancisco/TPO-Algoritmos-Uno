@@ -149,6 +149,8 @@ def mostrar_menu_eventos():
     print("6. Listar eventos ordenados por cliente")
     print("7. Filtrar Eventos por Fecha")
     print("8. Calcular costo total y registrar seña")
+    print("9. Cancelar evento con políticas de reintegro")
+    print("10. Filtrar eventos por mes")
     print("0. Volver al menú principal")
 
 
@@ -387,7 +389,7 @@ def listar_eventos_ordenado(lista_eventos):
         print("(sin eventos)")
         return
     
-    for ev in lista_eventos:
+    for ev in lista_ordenada:
         fecha = ev.get('fecha')
         try:
             fecha_string = fecha.strftime("%d/%m/%Y")
@@ -441,9 +443,10 @@ def filtrar_eventos_por_fecha(eventos):
             print(f"- Cliente: {e['cliente']}, Tipo: {e['tipo']}")
     else:
         print(f"No hay eventos para la fecha {fecha_busqueda_str}")
-        
+
+
 def calcular_costo_y_registrar_sena(eventos, servicios):
-    #Calcula el costo total de un evento y permite registrar una seña
+    """Calcula el costo total de un evento y permite registrar una seña"""
     try:
         cliente = input("Ingrese el nombre del cliente del evento: ").strip()
         while cliente == "":
@@ -516,7 +519,143 @@ def calcular_costo_y_registrar_sena(eventos, servicios):
         
     except (ValueError, IndexError, TypeError) as e:
         print(f"Error al calcular costo y registrar seña: {e}")
+
+
+def calcular_dias_hasta_evento(fecha_evento):
+    """Calcula los días desde hoy hasta la fecha del evento."""
+    hoy = datetime.date.today()
+    diferencia = fecha_evento - hoy
+    return diferencia.days
+
+
+def cancelar_evento_con_politicas(eventos):
+    """Cancela un evento aplicando políticas de reintegro según días de anticipación."""
+    try:
+        cliente = input("Ingrese el nombre del cliente del evento a cancelar: ").strip()
+        while cliente == "":
+            cliente = input("El nombre del cliente no puede estar vacío. Ingrese el nombre del cliente: ").strip()
         
+        evento = buscar_evento_por_cliente(eventos, cliente)
+        if not evento:
+            print("Evento no encontrado.")
+            return
+        
+        # Mostrar información del evento
+        fecha = evento.get('fecha')
+        try:
+            fecha_string = fecha.strftime("%d/%m/%Y")
+        except Exception:
+            fecha_string = "fecha inválida"
+        
+        print(f"\n--- Evento Encontrado ---")
+        print(f"Cliente: {evento.get('cliente')}")
+        print(f"Fecha: {fecha_string}")
+        print(f"Tipo: {evento.get('tipo')}")
+        
+        # Calcular días hasta el evento
+        dias_anticipacion = calcular_dias_hasta_evento(fecha)
+        print(f"\nDías de anticipación: {dias_anticipacion}")
+        
+        # Verificar si el evento ya pasó
+        if dias_anticipacion < 0:
+            print("ERROR: No se puede cancelar un evento que ya pasó.")
+            return
+        
+        # Obtener información de costos
+        costo_total = evento.get('costo_total', 0.0)
+        sena = evento.get('sena', 0.0)
+        
+        # Aplicar políticas de reintegro
+        if dias_anticipacion > 30:
+            reintegro = sena
+            monto_a_cobrar = 0.0
+            print(f"\n✓ Cancelación con más de 30 días de anticipación")
+            print(f"   - Seña pagada: ${sena:.2f}")
+            print(f"   - Reintegro: ${reintegro:.2f} (sin cargo)")
+            print(f"   - Monto a cobrar: ${monto_a_cobrar:.2f}")
+        else:
+            reintegro = 0.0
+            monto_a_cobrar = costo_total
+            print(f"\n✓ Cancelación con 30 días o menos de anticipación")
+            print(f"   - Costo total del evento: ${costo_total:.2f}")
+            print(f"   - Seña ya pagada: ${sena:.2f}")
+            print(f"   - Saldo a cobrar: ${monto_a_cobrar - sena:.2f}")
+            print(f"   - Monto total a cobrar: ${monto_a_cobrar:.2f}")
+            print(f"   - Reintegro de seña: ${reintegro:.2f}")
+        
+        # Confirmar cancelación
+        confirmacion = input("\n¿Confirma la cancelación del evento? (s/n): ").strip().lower()
+        
+        if confirmacion == 's' or confirmacion == 'si':
+            eventos.remove(evento)
+            print("\n✓ Evento cancelado exitosamente.")
+            guardar_eventos(parsear_eventos_JSON(eventos))
+        else:
+            print("Cancelación abortada. El evento no fue eliminado.")
+            
+    except (ValueError, IndexError, TypeError) as e:
+        print(f"Error al cancelar evento: {e}")
+
+
+def filtrar_eventos_por_mes(eventos):
+    """Filtra y muestra eventos de un mes específico."""
+    try:
+        # Solicitar mes y año
+        mes = int(input("Ingrese mes a filtrar (1-12): "))
+        while mes <= 0 or mes > 12:
+            mes = int(input("Mes inválido. Debe estar entre 1 y 12. Ingrese mes: "))
+        
+        anio = int(input("Ingrese año (debe ser 2025): "))
+        while anio != 2025:
+            anio = int(input("Año inválido. Debe ser 2025. Ingrese año: "))
+        
+        # Filtrar eventos del mes especificado
+        eventos_filtrados = []
+        for evento in eventos:
+            fecha = evento.get('fecha')
+            if fecha and fecha.month == mes and fecha.year == anio:
+                eventos_filtrados.append(evento)
+        
+        # Mostrar resultados
+        if eventos_filtrados:
+            meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+            print(f"\n--- Eventos de {meses[mes]} {anio} ---")
+            print(f"Total de eventos encontrados: {len(eventos_filtrados)}")
+            
+            # Ordenar por fecha
+            eventos_ordenados = sorted(eventos_filtrados, key=lambda e: e.get('fecha'))
+            
+            for evento in eventos_ordenados:
+                fecha = evento.get('fecha')
+                try:
+                    fecha_string = fecha.strftime("%d/%m/%Y")
+                except Exception:
+                    fecha_string = "fecha inválida"
+                
+                linea = f"- {fecha_string} | Cliente: {evento.get('cliente')} | Tipo: {evento.get('tipo')}"
+                
+                # Agregar encargado si existe
+                encargado = evento.get('encargado')
+                if encargado:
+                    try:
+                        nombre_enc = encargado.get('nombre', 'N/A')
+                        linea += f" | Encargado: {nombre_enc}"
+                    except Exception:
+                        pass
+                
+                print(linea)
+        else:
+            meses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+            print(f"\nNo hay eventos para {meses[mes]} {anio}")
+            
+    except ValueError:
+        print("Error: Ingrese números válidos para mes y año.")
+    except Exception as e:
+        print(f"Error al filtrar eventos por mes: {e}")
+
+
 def abm_eventos(eventos, empleados, servicios):
     # convertir fechas cargadas (strings) a datetime.date en memoria
     parsear_eventos_date(eventos)
@@ -557,6 +696,10 @@ def abm_eventos(eventos, empleados, servicios):
                     print("Error: No se han cargado los servicios.")
                 else:
                     calcular_costo_y_registrar_sena(eventos, servicios)
+            elif opcion == "9":
+                cancelar_evento_con_politicas(eventos)
+            elif opcion == "10":
+                filtrar_eventos_por_mes(eventos)
             elif opcion == "0":
                 break
             else:
