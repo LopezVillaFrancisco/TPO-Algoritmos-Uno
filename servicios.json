@@ -1,0 +1,12 @@
+[
+    {
+        "nombre": "DJ",
+        "descripcion": "DJ para todo el evento",
+        "costo": 30.0
+    },
+    {
+        "nombre": "Catering",
+        "descripcion": "Catering para toda el evento y todos los participantes",
+        "costo": 40.0
+    }
+]

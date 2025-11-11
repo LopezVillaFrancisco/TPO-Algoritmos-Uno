@@ -1,7 +1,7 @@
 [
     {
         "cliente": "Accenture",
-        "fecha": "15/12/2024",
+        "fecha": "15/12/2025",
         "tipo": "Conferencia",
         "encargado": {
             "nombre": "Juan Pérez",
@@ -51,6 +51,24 @@
         "encargado": {
             "nombre": "Roberto Sánchez",
             "dni": "55443322"
+        }
+    },
+    {
+        "cliente": "Microsoft",
+        "fecha": "11/11/2025",
+        "tipo": "Examen",
+        "encargado": {
+            "nombre": "Juan Pérez",
+            "dni": "12345678"
+        }
+    },
+    {
+        "cliente": "Santander",
+        "fecha": "20/12/2025",
+        "tipo": "Fiesta",
+        "encargado": {
+            "nombre": "Carlos López",
+            "dni": "11223344"
         }
     }
 ]

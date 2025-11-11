@@ -6,6 +6,11 @@ def parsear_eventos_date(eventos):
     """Parsea los eventos de texto a objetos datetime.date."""
     for evento in eventos:
         fecha = evento.get('fecha')
+        
+        # Si ya es un objeto date, saltar
+        if type(fecha) == datetime.date:
+            continue
+        
         # Intentar usar strip() si falla no es string
         try:
             fecha_string = fecha.strip()
