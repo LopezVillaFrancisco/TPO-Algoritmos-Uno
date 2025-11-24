@@ -22,10 +22,13 @@ def alta_servicio(servicios):
         descripcion = input("Ingrese descripción: ").strip()
         while descripcion == "":
             descripcion = input("La descripción no puede estar vacía. Ingrese descripción: ").strip()
-        costo_texto = input("Ingrese costo: ").strip()
-        while costo_texto == "":
-            costo_texto = input("El costo no puede estar vacío. Ingrese costo: ").strip()
-        costo = float(costo_texto)
+        try:
+            costo = int(input("Ingrese costo: "))
+            while costo <= 0 or costo >99999:
+                costo = int(input("Error costo invalido, ingrese costo nuevamente (0-99999): "))
+        except ValueError:
+            print("Error: el costo debe ser un número válido.")
+            return
         servicio = {"nombre": nombre, "descripcion": descripcion, "costo": costo}
         servicios.append(servicio)
         print("Servicio agregado.")
@@ -66,11 +69,14 @@ def modificar_servicio(servicios):
                 nueva_descripcion = input("Ingrese la nueva descripción: ")
                 while nueva_descripcion == "" or nueva_descripcion == ' ':
                     nueva_descripcion = input("La descripción no puede estar vacía. Ingrese la nueva descripción: ")
-                nuevo_costo = input("Ingrese el nuevo costo: ").strip()
-                while nuevo_costo == "":
-                    nuevo_costo = input("El costo no puede estar vacío. Ingrese el nuevo costo: ").strip()
-                nuevo_costo_val = float(nuevo_costo)
-                servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo_val})
+                try:
+                    nuevo_costo = int(input("Ingrese el nuevo costo: "))
+                    while nuevo_costo <= 0 or nuevo_costo > 99999:
+                        nuevo_costo = input("El costo no puede estar vacío. Ingrese el nuevo costo: ")
+                    servicio.update({"nombre": nuevo_nombre, "descripcion": nueva_descripcion, "costo": nuevo_costo})
+                except ValueError:
+                    print("Error: el costo debe ser un número válido.")
+                    return
                 print("Servicio modificado.")
                 guardar_servicios(servicios)
                 return
